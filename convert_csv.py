@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from csv_ical import Convert
+from convert import Convert
 
 convert = Convert()
 convert.SAVE_LOCATION = 'foursquare.ics'
