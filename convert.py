@@ -4,6 +4,7 @@ This file reads the CSV file and saves an ical file.
 There are a bunch of configurable variables
 """
 
+import re
 import csv
 import datetime
 from platform import uname
@@ -85,7 +86,14 @@ class Convert():
                 continue
             dtstart = ''
             if event.get('DTSTART'):
-                dtstart = event.get('DTSTART').dt + datetime.timedelta(hours=9)
+                desc = str(event.get('DESCRIPTION'))
+                reg = re.findall("Timezone offset: ([+-]\d\d:\d\d)", desc)
+                tz = reg[0] if len(reg) > 0 else "+09:00"
+                hours = tz[:3].replace("0","").replace("+","")
+                dtstart = event.get('DTSTART').dt
+                if hours:
+                    dtstart += datetime.timedelta(hours=int(hours))
+                dtstart = dtstart.strftime("%Y.%m.%d %H:%M:%S")
             dtend = ''
             if event.get('DTEND'):
                 dtend = event.get('DTEND').dt
